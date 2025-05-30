@@ -169,9 +169,9 @@ Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICE
 
 ## 📞 İletişim
 
-Proje Sahibi - [@yourusername](https://github.com/yourusername)
+Proje Sahibi - [@ByCodeTR](https://github.com/ByCodeTR)
 
-Proje Linki: [https://github.com/yourusername/restocafe](https://github.com/yourusername/restocafe)
+Proje Linki: [https://github.com/ByCodeTR/restocafe](https://github.com/ByCodeTR/restocafe)
 
 ## ✅ Yapılacaklar Listesi
 
