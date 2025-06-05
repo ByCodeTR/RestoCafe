@@ -1,5 +1,7 @@
 # 🍽️ RestoCafe - Kapsamlı Restoran Yönetim Sistemi
 
+<!-- Railway deployment trigger - Root directory configured -->
+
 RestoCafe, modern restoran işletmeciliği için tasarlanmış kapsamlı bir yönetim sistemidir. Masa takibinden envanter yönetimine, sipariş sürecinden raporlamaya kadar restoran operasyonlarının tüm süreçlerini dijitalleştirir.
 
 ## 🌟 Özellikler
