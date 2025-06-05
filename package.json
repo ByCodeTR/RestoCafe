@@ -4,22 +4,9 @@
   "description": "RestoCafe Restaurant Management System",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
-    "build": "cd backend && npm install && npx prisma generate",
-    "dev": "node app.js"
+    "start": "node app.js"
   },
-  "keywords": [
-    "restaurant",
-    "management",
-    "pos",
-    "nodejs",
-    "express",
-    "prisma"
-  ],
-  "author": "RestoCafe",
-  "license": "ISC",
   "engines": {
     "node": ">=18.0.0"
-  },
-  "dependencies": {}
+  }
 }
