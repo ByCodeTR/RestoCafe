@@ -8,6 +8,8 @@ yarn-error.log*
 /backend/dist/
 /frontend/.next/
 /frontend/out/
+build/
+dist/
 
 # Environment variables
 .env
@@ -15,6 +17,7 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
+.env.railway
 
 # Database
 *.db
@@ -90,6 +93,12 @@ temp_receipt.txt
 __pycache__/
 *.pyc
 
+# Test files
+test_*.ps1
+test_*.js
+*.test.js
+*.spec.js
+
 # Large files and archives
 *.zip
 *.rar
@@ -101,3 +110,17 @@ __pycache__/
 *.iso
 RestoCafe.zip
 *.backup
+
+# Railway specific
+.railway/
+
+# Deployment files
+deployment/
+scripts/
+
+# Printer test files
+receipt_preview.txt
+printer_test.txt
+
+# Final review gate
+final_review_gate.py
