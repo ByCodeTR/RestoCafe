@@ -1,0 +1,165 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Kullanıcı modeli
+model User {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  password  String
+  name      String
+  role      Role     @default(WAITER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orders    Order[]
+}
+
+// Rol enum
+enum Role {
+  ADMIN
+  MANAGER
+  CASHIER
+  WAITER
+}
+
+// Bölge modeli
+model Area {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tables    Table[]
+}
+
+// Masa modeli
+model Table {
+  id        String      @id @default(uuid())
+  number    Int
+  capacity  Int
+  status    TableStatus @default(AVAILABLE)
+  areaId    String
+  area      Area        @relation(fields: [areaId], references: [id])
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  orders    Order[]
+}
+
+// Masa durumu enum
+enum TableStatus {
+  AVAILABLE
+  OCCUPIED
+  RESERVED
+  MAINTENANCE
+}
+
+// Menü kategorisi modeli
+model Category {
+  id        String    @id @default(uuid())
+  name      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  products  Product[]
+}
+
+// Ürün modeli
+model Product {
+  id          String      @id @default(uuid())
+  name        String
+  description String?
+  price       Float
+  categoryId  String
+  category    Category    @relation(fields: [categoryId], references: [id])
+  stock       Int         @default(0)
+  minStock    Int         @default(10)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  orderItems  OrderItem[]
+  stockLogs   StockLog[]
+}
+
+// Sipariş modeli
+model Order {
+  id          String       @id @default(uuid())
+  tableId     String
+  table       Table        @relation(fields: [tableId], references: [id])
+  userId      String
+  user        User         @relation(fields: [userId], references: [id])
+  status      OrderStatus  @default(ACTIVE)
+  items       OrderItem[]
+  total       Float
+  paymentType PaymentType?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+// Sipariş durumu enum
+enum OrderStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+// Ödeme tipi enum
+enum PaymentType {
+  CASH
+  CREDIT_CARD
+  DEBIT_CARD
+}
+
+// Sipariş ürünleri modeli
+model OrderItem {
+  id        String   @id @default(uuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id])
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Float
+  note      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Tedarikçi modeli
+model Supplier {
+  id        String     @id @default(uuid())
+  name      String
+  phone     String?
+  email     String?
+  address   String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  stockLogs StockLog[]
+}
+
+// Stok log modeli
+model StockLog {
+  id         String       @id @default(uuid())
+  productId  String
+  product    Product      @relation(fields: [productId], references: [id])
+  supplierId String?
+  supplier   Supplier?    @relation(fields: [supplierId], references: [id])
+  quantity   Int
+  type       StockLogType
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+}
+
+// Stok log tipi enum
+enum StockLogType {
+  IN
+  OUT
+  ADJUSTMENT
+}

@@ -1,354 +1,253 @@
-import { PrismaClient, Role, TableStatus, OrderStatus, PaymentType, StockLogType } from '@prisma/client';
-import bcrypt from 'bcrypt';
-const prisma = new PrismaClient();
+import { PrismaClient, UserRole } from '@prisma/client'
+import bcrypt from 'bcrypt'
+
+const prisma = new PrismaClient()
+
+// Role enum
+enum Role {
+  ADMIN = 'ADMIN',
+  MANAGER = 'MANAGER',
+  CASHIER = 'CASHIER',
+  WAITER = 'WAITER',
+  KITCHEN = 'KITCHEN',
+}
 
 async function main() {
   try {
-    console.log('Başlıyor...');
+    // Önce mevcut verileri temizle (sıralı olarak)
+    await prisma.orderItem.deleteMany()
+    await prisma.order.deleteMany()
+    await prisma.stockLog.deleteMany()
+    await prisma.product.deleteMany()
+    await prisma.category.deleteMany()
+    await prisma.table.deleteMany()
+    await prisma.area.deleteMany()
+    await prisma.supplier.deleteMany()
+    await prisma.user.deleteMany()
 
-    // Create users
-    console.log('Kullanıcılar oluşturuluyor...');
-    
-    // Hash all passwords
-    const adminPassword = await bcrypt.hash('admin123', 10);
-    const garsonPassword = await bcrypt.hash('garson123', 10);
-    const kasiyerPassword = await bcrypt.hash('kasiyer123', 10);
-    
-    const admin = await prisma.user.create({
-      data: {
+    console.log('Mevcut veriler temizlendi...')
+
+    // Tedarikçileri oluştur
+    const suppliers = [
+      {
+        name: 'Anadolu Et',
+        contactName: 'Mehmet Yılmaz',
+        phone: '0532 111 2233',
+        email: 'info@anadoluet.com',
+        address: 'Ankara Gıda Toptancılar Sitesi No: 123',
+      },
+      {
+        name: 'Ege Sebze Meyve',
+        contactName: 'Ayşe Demir',
+        phone: '0533 222 3344',
+        email: 'satis@egesebze.com',
+        address: 'İzmir Sebze Hali No: 45',
+      },
+      {
+        name: 'Marmara İçecek',
+        contactName: 'Ali Kaya',
+        phone: '0534 333 4455',
+        email: 'siparis@marmaraicecek.com',
+        address: 'İstanbul Toptancılar Hali Blok C No: 78',
+      },
+      {
+        name: 'Karadeniz Balık',
+        contactName: 'Fatma Şahin',
+        phone: '0535 444 5566',
+        email: 'info@karadenizbalik.com',
+        address: 'Trabzon Balık Hali No: 34',
+      },
+      {
+        name: 'Akdeniz Baharat',
+        contactName: 'Hasan Öztürk',
+        phone: '0536 555 6677',
+        email: 'satis@akdenizbaharat.com',
+        address: 'Antalya Toptancılar Çarşısı No: 56',
+      }
+    ]
+
+    for (const supplier of suppliers) {
+      await prisma.supplier.create({
+        data: supplier,
+      })
+    }
+
+    console.log('Tedarikçiler oluşturuldu...')
+
+    // Admin kullanıcısı oluştur
+    const adminPassword = await bcrypt.hash('admin123', 10)
+    const admin = await prisma.user.upsert({
+      where: { username: 'admin' },
+      update: {},
+      create: {
         username: 'admin',
         password: adminPassword,
         name: 'Admin User',
-        role: Role.ADMIN
+        email: 'admin@restocafe.com',
+        role: UserRole.ADMIN
       },
-    });
-    console.log('Admin oluşturuldu:', admin);
+    })
 
-    const waiter1 = await prisma.user.create({
-      data: {
+    // Manager kullanıcısı oluştur
+    const managerPassword = await bcrypt.hash('manager123', 10)
+    const manager = await prisma.user.upsert({
+      where: { username: 'manager' },
+      update: {},
+      create: {
+        username: 'manager',
+        password: managerPassword,
+        name: 'Manager User',
+        email: 'manager@restocafe.com',
+        role: UserRole.MANAGER
+      },
+    })
+
+    // Garson kullanıcısı oluştur
+    const waiterPassword = await bcrypt.hash('waiter123', 10)
+    const waiter = await prisma.user.upsert({
+      where: { username: 'waiter' },
+      update: {},
+      create: {
+        username: 'waiter',
+        password: waiterPassword,
+        name: 'Waiter User',
+        email: 'waiter@restocafe.com',
+        role: UserRole.WAITER
+      },
+    })
+
+    // Garson1 kullanıcısı oluştur
+    const garson1Password = await bcrypt.hash('garson123', 10)
+    const garson1 = await prisma.user.upsert({
+      where: { username: 'garson1' },
+      update: {},
+      create: {
         username: 'garson1',
-        password: garsonPassword,
+        password: garson1Password,
         name: 'Ahmet Garson',
-        role: Role.WAITER
+        email: 'garson1@restocafe.com',
+        role: UserRole.WAITER
       },
-    });
-    console.log('Garson 1 oluşturuldu:', waiter1);
+    })
 
-    const waiter2 = await prisma.user.create({
-      data: {
+    // Garson2 kullanıcısı oluştur
+    const garson2Password = await bcrypt.hash('garson123', 10)
+    const garson2 = await prisma.user.upsert({
+      where: { username: 'garson2' },
+      update: {},
+      create: {
         username: 'garson2',
-        password: garsonPassword,
+        password: garson2Password,
         name: 'Mehmet Garson',
-        role: Role.WAITER
+        email: 'garson2@restocafe.com',
+        role: UserRole.WAITER
       },
-    });
+    })
 
-    const cashier = await prisma.user.create({
+    // Mutfak kullanıcısı oluştur
+    const kitchenPassword = await bcrypt.hash('kitchen123', 10)
+    const kitchen = await prisma.user.upsert({
+      where: { username: 'kitchen' },
+      update: {},
+      create: {
+        username: 'kitchen',
+        password: kitchenPassword,
+        name: 'Kitchen User',
+        email: 'kitchen@restocafe.com',
+        role: UserRole.KITCHEN
+      },
+    })
+
+    // Alanlar oluştur
+    const mainArea = await prisma.area.create({
       data: {
-        username: 'kasiyer1',
-        password: kasiyerPassword,
-        name: 'Ayşe Kasiyer',
-        role: Role.CASHIER
+        name: 'Ana Salon',
       },
-    });
+    })
 
-    // Create areas
-    console.log('Bölgeler oluşturuluyor...');
-    const salon = await prisma.area.create({
+    const terrace = await prisma.area.create({
       data: {
-        name: 'Salon',
-        tables: {
-          create: [
-            { number: 1, capacity: 4 },
-            { number: 2, capacity: 4 },
-            { number: 3, capacity: 6 },
-          ],
-        },
+        name: 'Teras',
       },
-    });
-    console.log('Salon oluşturuldu:', salon);
+    })
 
-    const bahce = await prisma.area.create({
-      data: {
-        name: 'Bahçe',
-        tables: {
-          create: [
-            { number: 4, capacity: 4 },
-            { number: 5, capacity: 4 },
-            { number: 6, capacity: 8 },
-          ],
-        },
-      },
-    });
-    console.log('Bahçe oluşturuldu:', bahce);
-
-    // Create tables
-    console.log('Masalar oluşturuluyor...');
-    const tables = await Promise.all([
-      prisma.table.create({
+    // Masalar oluştur
+    for (let i = 1; i <= 10; i++) {
+      await prisma.table.create({
         data: {
-          number: 1,
-          capacity: 4,
-          status: TableStatus.AVAILABLE,
-          areaId: salon.id,
+          name: `Masa ${i}`,
+          number: `T${i}`,
+          capacity: i <= 5 ? 4 : 6,
+          status: 'AVAILABLE',
+          totalAmount: 0,
+          areaId: i <= 6 ? mainArea.id : terrace.id,
         },
-      }),
-      prisma.table.create({
-        data: {
-          number: 2,
-          capacity: 4,
-          status: TableStatus.AVAILABLE,
-          areaId: salon.id,
-        },
-      }),
-      prisma.table.create({
-        data: {
-          number: 3,
-          capacity: 6,
-          status: TableStatus.AVAILABLE,
-          areaId: salon.id,
-        },
-      }),
-      prisma.table.create({
-        data: {
-          number: 4,
-          capacity: 4,
-          status: TableStatus.AVAILABLE,
-          areaId: bahce.id,
-        },
-      }),
-      prisma.table.create({
-        data: {
-          number: 5,
-          capacity: 4,
-          status: TableStatus.AVAILABLE,
-          areaId: bahce.id,
-        },
-      }),
-      prisma.table.create({
-        data: {
-          number: 6,
-          capacity: 8,
-          status: TableStatus.AVAILABLE,
-          areaId: bahce.id,
-        },
-      }),
-    ]);
+      })
+    }
 
-    // Create categories
-    console.log('Kategoriler oluşturuluyor...');
-    const icecekler = await prisma.category.create({
-      data: {
-        name: 'İçecekler',
-        products: {
-          create: [
-            { name: 'Çay', price: 15, stock: 100, minStock: 50 },
-            { name: 'Kahve', price: 30, stock: 50, minStock: 20 },
-            { name: 'Limonata', price: 25, stock: 30, minStock: 10 },
-          ],
-        },
-      },
-    });
-    console.log('İçecekler kategorisi oluşturuldu:', icecekler);
+    // Kategoriler oluştur
+    const categories = [
+      { name: 'Çorbalar' },
+      { name: 'Ana Yemekler' },
+      { name: 'Salatalar' },
+      { name: 'İçecekler' },
+      { name: 'Tatlılar' },
+    ]
 
-    const yemekler = await prisma.category.create({
-      data: {
-        name: 'Yemekler',
-        products: {
-          create: [
-            { name: 'Köfte', price: 120, stock: 50, minStock: 10 },
-            { name: 'Pide', price: 90, stock: 30, minStock: 5 },
-            { name: 'Lahmacun', price: 50, stock: 40, minStock: 10 },
-          ],
-        },
-      },
-    });
-    console.log('Yemekler kategorisi oluşturuldu:', yemekler);
+    const createdCategories = []
+    for (const category of categories) {
+      const createdCategory = await prisma.category.create({
+        data: category,
+      })
+      createdCategories.push(createdCategory)
+    }
 
-    // Create products
-    console.log('Ürünler oluşturuluyor...');
-    const cola = await prisma.product.create({
-      data: {
-        name: 'Cola',
-        description: 'Soğuk içecek',
-        price: 15.0,
-        categoryId: icecekler.id,
-        stock: 100,
-        minStock: 20,
-      },
-    });
-    console.log('Cola ürünü oluşturuldu:', cola);
+    // Ürünler oluştur
+    const products = [
+      { name: 'Mercimek Çorbası', price: 45.00, categoryName: 'Çorbalar', description: 'Geleneksel mercimek çorbası', stock: 50, minStock: 10 },
+      { name: 'Domates Çorbası', price: 45.00, categoryName: 'Çorbalar', description: 'Kremalı domates çorbası', stock: 50, minStock: 10 },
+      { name: 'Köfte', price: 120.00, categoryName: 'Ana Yemekler', description: 'Izgara köfte', stock: 30, minStock: 5 },
+      { name: 'Tavuk Şiş', price: 100.00, categoryName: 'Ana Yemekler', description: 'Marine edilmiş tavuk şiş', stock: 30, minStock: 5 },
+      { name: 'Mevsim Salata', price: 55.00, categoryName: 'Salatalar', description: 'Mevsim yeşillikleri', stock: 20, minStock: 5 },
+      { name: 'Çoban Salata', price: 45.00, categoryName: 'Salatalar', description: 'Domates, salatalık, biber', stock: 20, minStock: 5 },
+      { name: 'Kola', price: 25.00, categoryName: 'İçecekler', description: 'Soğuk içecek', stock: 100, minStock: 20 },
+      { name: 'Ayran', price: 20.00, categoryName: 'İçecekler', description: 'Taze ayran', stock: 100, minStock: 20 },
+      { name: 'Künefe', price: 75.00, categoryName: 'Tatlılar', description: 'Sıcak künefe', stock: 15, minStock: 5 },
+      { name: 'Sütlaç', price: 55.00, categoryName: 'Tatlılar', description: 'Fırında sütlaç', stock: 15, minStock: 5 },
+    ]
 
-    const ayran = await prisma.product.create({
-      data: {
-        name: 'Ayran',
-        description: 'Soğuk içecek',
-        price: 10.0,
-        categoryId: icecekler.id,
-        stock: 50,
-        minStock: 10,
-      },
-    });
-    console.log('Ayran ürünü oluşturuldu:', ayran);
+    const categoryMap = new Map(createdCategories.map(cat => [cat.name, cat.id]))
 
-    const kebab = await prisma.product.create({
-      data: {
-        name: 'Adana Kebap',
-        description: 'Acılı kebap',
-        price: 120.0,
-        categoryId: yemekler.id,
-        stock: 50,
-        minStock: 10,
-      },
-    });
-    console.log('Adana Kebap ürünü oluşturuldu:', kebab);
+    for (const product of products) {
+      const categoryId = categoryMap.get(product.categoryName)
+      if (categoryId) {
+        await prisma.product.create({
+          data: {
+            name: product.name,
+            price: product.price,
+            description: product.description,
+            categoryId: categoryId,
+            stock: product.stock,
+            minStock: product.minStock,
+          },
+        })
+      }
+    }
 
-    const iskender = await prisma.product.create({
-      data: {
-        name: 'İskender',
-        description: 'Döner, yoğurt ve domates sosu',
-        price: 100.0,
-        categoryId: yemekler.id,
-        stock: 30,
-        minStock: 5,
-      },
-    });
-    console.log('İskender ürünü oluşturuldu:', iskender);
-
-    const künefe = await prisma.product.create({
-      data: {
-        name: 'Künefe',
-        description: 'Sıcak servis',
-        price: 60.0,
-        categoryId: yemekler.id,
-        stock: 20,
-        minStock: 5,
-      },
-    });
-    console.log('Künefe ürünü oluşturuldu:', künefe);
-
-    const çobanSalata = await prisma.product.create({
-      data: {
-        name: 'Çoban Salata',
-        description: 'Domates, salatalık, biber, soğan',
-        price: 35.0,
-        categoryId: yemekler.id,
-        stock: 40,
-        minStock: 8,
-      },
-    });
-    console.log('Çoban Salata ürünü oluşturuldu:', çobanSalata);
-
-    // Create suppliers
-    const supplier1 = await prisma.supplier.create({
-      data: {
-        name: 'ABC Tedarik',
-        phone: '0212 123 4567',
-        email: 'abc@tedarik.com',
-        address: 'İstanbul',
-      },
-    });
-
-    const supplier2 = await prisma.supplier.create({
-      data: {
-        name: 'XYZ Gıda',
-        phone: '0216 987 6543',
-        email: 'xyz@gida.com',
-        address: 'Ankara',
-      },
-    });
-
-    // Create some orders
-    await prisma.order.create({
-      data: {
-        tableId: tables[0].id,
-        userId: waiter1.id,
-        status: OrderStatus.ACTIVE,
-        total: 165.0,
-        items: {
-          create: [
-            {
-              productId: cola.id, // Cola
-              quantity: 1,
-              price: 15.0,
-            },
-            {
-              productId: kebab.id, // Adana Kebap
-              quantity: 1,
-              price: 120.0,
-            },
-            {
-              productId: çobanSalata.id, // Çoban Salata
-              quantity: 1,
-              price: 30.0,
-            },
-          ],
-        },
-      },
-    });
-
-    await prisma.order.create({
-      data: {
-        tableId: tables[2].id,
-        userId: waiter2.id,
-        status: OrderStatus.COMPLETED,
-        total: 170.0,
-        paymentType: PaymentType.CREDIT_CARD,
-        items: {
-          create: [
-            {
-              productId: iskender.id, // İskender
-              quantity: 1,
-              price: 100.0,
-            },
-            {
-              productId: künefe.id, // Künefe
-              quantity: 1,
-              price: 60.0,
-            },
-            {
-              productId: ayran.id, // Ayran
-              quantity: 1,
-              price: 10.0,
-            },
-          ],
-        },
-      },
-    });
-
-    // Create some stock logs
-    await Promise.all([
-      prisma.stockLog.create({
-        data: {
-          productId: cola.id,
-          supplierId: supplier1.id,
-          quantity: 100,
-          type: StockLogType.IN,
-        },
-      }),
-      prisma.stockLog.create({
-        data: {
-          productId: kebab.id,
-          supplierId: supplier2.id,
-          quantity: 50,
-          type: StockLogType.IN,
-        },
-      }),
-    ]);
-
-    console.log('Tüm veriler başarıyla oluşturuldu! 🎉');
+    console.log('Seed data created successfully')
   } catch (error) {
-    console.error('Bir hata oluştu:', error);
-    throw error;
+    console.error('Error seeding data:', error)
+    throw error
+  } finally {
+    await prisma.$disconnect()
   }
 }
 
 main()
   .catch((e) => {
-    console.error('Ana fonksiyonda hata:', e);
-    process.exit(1);
+    console.error(e)
+    process.exit(1)
   })
   .finally(async () => {
-    console.log('Bağlantı kapatılıyor...');
-    await prisma.$disconnect();
-  }); 
+    await prisma.$disconnect()
+  })

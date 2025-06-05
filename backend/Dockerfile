@@ -1,26 +1,30 @@
-# Node.js 18 Alpine image kullan
+# Use Node.js 18 Alpine
 FROM node:18-alpine
 
-# Çalışma dizinini ayarla
+# Set working directory
 WORKDIR /app
 
-# Package dosyalarını kopyala
+# Copy package files
 COPY package*.json ./
 
-# Bağımlılıkları yükle
+# Install dependencies
 RUN npm ci --only=production
 
-# Prisma CLI'yi global olarak yükle
+# Install Prisma CLI globally
 RUN npm install -g prisma
 
-# Uygulama dosyalarını kopyala
+# Copy application files
 COPY . .
 
-# Prisma client'ı generate et
+# Generate Prisma client
 RUN npx prisma generate
 
-# Port'u expose et
+# Expose port
 EXPOSE 5000
 
-# Uygulama başlatma komutu
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:5000/', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"
+
+# Start command
 CMD ["sh", "-c", "npx prisma migrate deploy && npm start"] 
