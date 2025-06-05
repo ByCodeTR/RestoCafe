@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only ./src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js",
+    "start": "ts-node src/index.ts",
+    "start:prod": "node dist/index.js",
     "seed": "ts-node prisma/seeds/tables.ts",
     "seed:all": "npx prisma db seed",
     "typeorm": "typeorm-ts-node-commonjs",
@@ -44,10 +45,13 @@
     "sonner": "^2.0.4",
     "typeorm": "^0.3.24",
     "utf-8-validate": "^6.0.5",
-    "zod": "^3.25.42"
+    "zod": "^3.25.42",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3",
+    "@prisma/client": "^5.7.1",
+    "prisma": "^5.7.1"
   },
   "devDependencies": {
-    "@prisma/client": "^5.7.1",
     "@types/bcrypt": "^5.0.2",
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.17",
@@ -55,11 +59,8 @@
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^20.10.6",
     "nodemon": "^3.0.2",
-    "prisma": "^5.7.1",
-    "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
-    "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.3.3"
+    "tsconfig-paths": "^4.2.0"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
