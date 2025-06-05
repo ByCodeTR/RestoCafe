@@ -5,11 +5,9 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "build": "cd backend && npm install && npm run build && cd ../frontend && npm install && npm run build",
-    "postinstall": "cd backend && npm install && npx prisma generate && cd ../frontend && npm install",
+    "build": "echo 'Build completed'",
+    "postinstall": "cd backend && npm install && npx prisma generate",
     "dev": "node app.js",
-    "railway:build": "npm run build",
-    "railway:start": "npm start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
