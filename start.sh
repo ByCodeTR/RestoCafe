@@ -1,12 +1,13 @@
 #!/bin/bash
 
-# Backend dependencies'lerini yükle
+# Backend dizinine git
 cd backend
+
+# Dependencies'leri yükle
 npm install
 
 # Prisma generate
 npx prisma generate
 
-# Ana dizine dön ve uygulamayı başlat
-cd ..
-node app.js 
+# Ana dizindeki app.js'i backend'den çalıştır
+node ../app.js 
