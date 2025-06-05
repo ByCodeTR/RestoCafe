@@ -1,0 +1,207 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  password  String
+  name      String
+  email     String   @unique
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  role      UserRole @default(WAITER)
+  orders    Order[]
+}
+
+model Area {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tables    Table[]
+}
+
+model Table {
+  id          String   @id @default(uuid())
+  name        String
+  number      String
+  capacity    Int
+  status      String   @default("AVAILABLE")
+  areaId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  totalAmount Float    @default(0)
+  orders      Order[]
+  area        Area     @relation(fields: [areaId], references: [id])
+
+  @@unique([number, areaId])
+}
+
+model Category {
+  id        String    @id @default(uuid())
+  name      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  products  Product[]
+}
+
+model Product {
+  id          String      @id @default(uuid())
+  name        String
+  description String?
+  price       Float
+  categoryId  String
+  stock       Int         @default(0)
+  minStock    Int         @default(10)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  orderItems  OrderItem[]
+  category    Category    @relation(fields: [categoryId], references: [id])
+  stockLogs   StockLog[]
+}
+
+model Order {
+  id            String      @id @default(uuid())
+  tableId       String
+  userId        String
+  status        OrderStatus @default(NEW)
+  total         Float
+  paymentMethod String?
+  cashAmount    Float?
+  creditAmount  Float?
+  paidAt        DateTime?
+  isPrinted     Boolean     @default(false)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  table         Table       @relation(fields: [tableId], references: [id])
+  user          User        @relation(fields: [userId], references: [id])
+  items         OrderItem[]
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  orderId   String
+  productId String
+  name      String
+  quantity  Int
+  price     Float
+  note      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  order     Order    @relation(fields: [orderId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+}
+
+model Supplier {
+  id          String     @id @default(uuid())
+  name        String
+  contactName String?
+  phone       String?
+  email       String?
+  address     String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  stockLogs   StockLog[]
+}
+
+model StockLog {
+  id         String       @id @default(uuid())
+  productId  String
+  supplierId String?
+  quantity   Int
+  type       StockLogType
+  notes      String?
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  product    Product      @relation(fields: [productId], references: [id])
+  supplier   Supplier?    @relation(fields: [supplierId], references: [id])
+}
+
+model Printer {
+  id        String   @id @default(cuid())
+  name      String
+  type      String   @unique
+  ipAddress String?
+  port      Int?
+  usbPort   String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CompanyInfo {
+  id        String   @id @default(cuid())
+  name      String
+  address   String
+  phone     String
+  website   String?
+  email     String?
+  taxNumber String?
+  taxOffice String?
+  logo      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  slogan    String?
+}
+
+model SystemSettings {
+  id                String    @id @default(cuid())
+  backupEnabled     Boolean   @default(true)
+  backupFrequency   Int       @default(24)
+  backupPath        String?
+  lastBackupAt      DateTime?
+  autoTableClose    Boolean   @default(false)
+  orderNumberPrefix String    @default("ORD")
+  tableNumberPrefix String    @default("T")
+  defaultLanguage   String    @default("tr")
+  theme             String    @default("light")
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+model BackupHistory {
+  id        String   @id @default(cuid())
+  filename  String
+  path      String
+  size      Int
+  status    String
+  error     String?
+  createdAt DateTime @default(now())
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  CASHIER
+  WAITER
+  KITCHEN
+}
+
+enum OrderStatus {
+  NEW
+  PREPARING
+  READY
+  SERVED
+  PAID
+  CANCELLED
+}
+
+enum TableStatus {
+  AVAILABLE
+  OCCUPIED
+  RESERVED
+  MAINTENANCE
+}
+
+enum StockLogType {
+  IN
+  OUT
+  ADJUSTMENT
+}

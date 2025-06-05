@@ -1,0 +1,89 @@
+================ YENİ FİŞ TASARIMI ================
+
+           *** SATIS FISI ***           
+           Acar Köşe Restorant           
+         Tel: 0553 718 50 24            
+      www.acarkoserestorant.com.tr      
+================================================
+Fis No: TEST1234             25.12.2024
+Masa  : Masa 5               14:30:25  
+Garson: Ahmet Yılmaz                   
+================================================
+
+URUNLER:
+------------------------------------------------
+ADET  URUN ADI                    TUTAR
+------------------------------------------------
+2     Adana Kebap Porsiyon        90.00 TL
+2     Ayran (Büyük)               17.00 TL
+1     Çoban Salata                18.50 TL
+1     Baklava (4 Dilim)           25.00 TL
+------------------------------------------------
+
+TOPLAM:                          125.50 TL
+ODEME:                              NAKİT
+Alinan:                          150.00 TL
+Para Ustu:                        24.50 TL
+================================================
+            TESEKKUR EDERIZ!            
+           Yeniden bekleriz...          
+================================================
+
+================ ESKİ TASARIM (SORUNLU) ================
+
+SATIS FISI
+========================================================================
+RestoCafe
+Tel: (0212) 555-0123
+========================================================================
+Fis No: TEST1234
+Masa: Masa 5
+Tarih: 25.12.2024 14:30:25
+Garson: Ahmet Yılmaz
+========================================================================
+
+URUNLER:
+2x Adana Kebap Porsiyon - 90.00 TL
+2x Ayran (Büyük) - 17.00 TL
+1x Çoban Salata - 18.50 TL
+1x Baklava (4 Dilim) - 25.00 TL
+
+========================================================================
+                                                    TOPLAM: 125.50 TL
+                                                     ODEME: NAKİT
+                                                   Alinan: 150.00 TL
+                                                Para Ustu: 24.50 TL
+========================================================================
+                              TESEKKUR EDERIZ!
+                           Bu fis yasal belgedir.
+========================================================================
+
+================ KARŞILAŞTIRMA ================
+
+YENİ TASARIM AVANTAJLARI:
+✅ 48 karakter genişlik (80mm yazıcı için optimal)
+✅ Kağıt alanı verimli kullanım
+✅ Daha kompakt ve okunabilir
+✅ Tablo formatında ürün listesi
+✅ Hizalanmış fiyat bilgileri
+✅ Daha az kağıt tüketimi
+✅ Acar Köşe Restorant markası
+✅ Telefon ve web sitesi bilgisi
+
+ESKİ TASARIM SORUNLARI:
+❌ 72 karakter genişlik (çok geniş)
+❌ Kağıt alanı verimsiz kullanım
+❌ Çok uzun çizgiler
+❌ Sağa yaslanmış fiyatlar okunaksız
+❌ Fazla kağıt tüketimi
+❌ Termal yazıcıda düzgün çıkmıyor
+
+================ YENİ ÖZELLİKLER ================
+
+AKTIF MASALAR SAYFASINDAKİ YENİLİKLER:
+✅ Her dolu masada "📄 Adisyon Çıkart" butonu
+✅ Adisyon özeti modal penceresi
+✅ Sipariş detayları ve fiyatları görünür
+✅ Toplam tutar hesaplaması
+✅ Doğrudan yazdırma özelliği
+✅ Kullanıcı dostu arayüz 
