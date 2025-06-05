@@ -3,16 +3,18 @@
   "version": "1.0.0",
   "description": "RestoCafe Backend",
   "main": "src/index.ts",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only ./src/index.ts",
     "build": "tsc",
     "start": "ts-node src/index.ts",
     "start:prod": "node dist/index.js",
+    "postinstall": "npx prisma generate",
     "seed": "ts-node prisma/seeds/tables.ts",
     "seed:all": "npx prisma db seed",
-    "typeorm": "typeorm-ts-node-commonjs",
-    "migration:generate": "npm run typeorm migration:generate -- -d src/config/database.ts",
-    "migration:run": "npm run typeorm migration:run -- -d src/config/database.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "ts-node prisma/seed.ts",
