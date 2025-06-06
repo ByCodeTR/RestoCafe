@@ -57,7 +57,7 @@ interface ProductFormModalProps {
   isOpen: boolean
   onClose: () => void
   onSubmit: (data: any) => void
-  editingProduct?: Product
+  editingProduct?: Product | null
   categories: Category[]
 }
 

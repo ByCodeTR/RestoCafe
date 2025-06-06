@@ -122,7 +122,7 @@ export default function StockPage() {
         console.log('Gelen ürünler:', data);
         
         // Stok kontrolü ve uyarılar
-        data.forEach(product => {
+        data.forEach((product: Product) => {
           if (product.stock <= product.minStock) {
             toast.warning(`Uyarı: ${product.name} ürününün stok miktarı ${product.stock} adet kaldı! (Min: ${product.minStock})`, {
               duration: 5000,

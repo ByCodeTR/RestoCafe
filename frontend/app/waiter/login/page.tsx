@@ -7,12 +7,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import api from '@/lib/api';
-import { Metadata } from "next"
-
-export const metadata: Metadata = {
-  title: "Garson Girişi | RestoCafe",
-  description: "RestoCafe garson giriş paneli",
-}
 
 export default function WaiterLoginPage() {
   const router = useRouter();

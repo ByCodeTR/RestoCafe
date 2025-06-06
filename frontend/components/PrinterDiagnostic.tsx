@@ -18,7 +18,7 @@ import {
   Usb,
   Wifi,
   Monitor,
-  Tool,
+  Wrench,
   Zap,
   FileText,
   Download
@@ -196,7 +196,7 @@ export default function PrinterDiagnostic() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Tool className="h-8 w-8" />
+            <Wrench className="h-8 w-8" />
             Yazıcı Sorun Giderme
           </h1>
           <p className="text-gray-600 mt-2">

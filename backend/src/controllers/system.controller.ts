@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import fs from 'fs';
 import path from 'path';
+import bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
@@ -14,7 +15,7 @@ export const resetSystem = async (req: Request, res: Response) => {
     await prisma.orderItem.deleteMany();
     await prisma.order.deleteMany();
     await prisma.table.deleteMany();
-    await prisma.menuItem.deleteMany();
+    await prisma.product.deleteMany();
     await prisma.category.deleteMany();
     await prisma.printer.deleteMany();
     
@@ -53,144 +54,133 @@ export const loadSampleData = async (req: Request, res: Response) => {
     const categories = await Promise.all([
       prisma.category.create({
         data: {
-          name: 'Ana Yemekler',
-          description: 'Et ve tavuk yemekleri',
-          isActive: true
+          name: 'Ana Yemekler'
         }
       }),
       prisma.category.create({
         data: {
-          name: 'İçecekler',
-          description: 'Sıcak ve soğuk içecekler',
-          isActive: true
+          name: 'İçecekler'
         }
       }),
       prisma.category.create({
         data: {
-          name: 'Tatlılar',
-          description: 'Ev yapımı tatlılar',
-          isActive: true
+          name: 'Tatlılar'
         }
       }),
       prisma.category.create({
         data: {
-          name: 'Salatalar',
-          description: 'Taze salatalar',
-          isActive: true
+          name: 'Salatalar'
         }
       })
     ]);
     
-    // Menü öğeleri oluştur
-    const menuItems = await Promise.all([
+    // Ürünler oluştur
+    const products = await Promise.all([
       // Ana Yemekler
-      prisma.menuItem.create({
+      prisma.product.create({
         data: {
           name: 'Izgara Tavuk',
           description: 'Özel baharatlarla marine edilmiş izgara tavuk',
           price: 45.00,
           categoryId: categories[0].id,
-          isActive: true,
-          preparationTime: 15
+          stock: 50
         }
       }),
-      prisma.menuItem.create({
+      prisma.product.create({
         data: {
           name: 'Köfte',
           description: 'Ev yapımı köfte, pilav ve salata ile',
           price: 38.00,
           categoryId: categories[0].id,
-          isActive: true,
-          preparationTime: 12
+          stock: 30
         }
       }),
-      prisma.menuItem.create({
+      prisma.product.create({
         data: {
           name: 'Balık Izgara',
           description: 'Günün taze balığı, ızgara',
           price: 65.00,
           categoryId: categories[0].id,
-          isActive: true,
-          preparationTime: 20
+          stock: 20
         }
       }),
       
       // İçecekler
-      prisma.menuItem.create({
+      prisma.product.create({
         data: {
           name: 'Çay',
           description: 'Geleneksel Türk çayı',
           price: 8.00,
           categoryId: categories[1].id,
-          isActive: true,
-          preparationTime: 3
+          stock: 100
         }
       }),
-      prisma.menuItem.create({
+      prisma.product.create({
         data: {
           name: 'Türk Kahvesi',
           description: 'Geleneksel Türk kahvesi',
           price: 15.00,
           categoryId: categories[1].id,
-          isActive: true,
-          preparationTime: 5
+          stock: 50
         }
       }),
-      prisma.menuItem.create({
+      prisma.product.create({
         data: {
           name: 'Ayran',
           description: 'Ev yapımı ayran',
           price: 12.00,
           categoryId: categories[1].id,
-          isActive: true,
-          preparationTime: 2
+          stock: 80
         }
       }),
       
       // Tatlılar
-      prisma.menuItem.create({
+      prisma.product.create({
         data: {
           name: 'Baklava',
           description: 'Antep fıstıklı baklava',
           price: 25.00,
           categoryId: categories[2].id,
-          isActive: true,
-          preparationTime: 5
+          stock: 25
         }
       }),
-      prisma.menuItem.create({
+      prisma.product.create({
         data: {
           name: 'Sütlaç',
           description: 'Ev yapımı sütlaç',
           price: 18.00,
           categoryId: categories[2].id,
-          isActive: true,
-          preparationTime: 3
+          stock: 15
         }
       }),
       
       // Salatalar
-      prisma.menuItem.create({
+      prisma.product.create({
         data: {
           name: 'Çoban Salata',
           description: 'Domates, salatalık, soğan, maydanoz',
           price: 22.00,
           categoryId: categories[3].id,
-          isActive: true,
-          preparationTime: 5
+          stock: 40
         }
       }),
-      prisma.menuItem.create({
+      prisma.product.create({
         data: {
           name: 'Mevsim Salata',
           description: 'Mevsim yeşillikleri ile',
           price: 28.00,
           categoryId: categories[3].id,
-          isActive: true,
-          preparationTime: 7
+          stock: 35
         }
       })
     ]);
+    
+    // Bölge oluştur
+    const area = await prisma.area.create({
+      data: {
+        name: 'Ana Salon'
+      }
+    });
     
     // Masalar oluştur
     const tables = await Promise.all([
@@ -199,7 +189,8 @@ export const loadSampleData = async (req: Request, res: Response) => {
           name: 'Masa 1',
           number: '1',
           capacity: 4,
-          status: 'AVAILABLE'
+          status: 'AVAILABLE',
+          areaId: area.id
         }
       }),
       prisma.table.create({
@@ -207,7 +198,8 @@ export const loadSampleData = async (req: Request, res: Response) => {
           name: 'Masa 2',
           number: '2',
           capacity: 2,
-          status: 'AVAILABLE'
+          status: 'AVAILABLE',
+          areaId: area.id
         }
       }),
       prisma.table.create({
@@ -215,7 +207,8 @@ export const loadSampleData = async (req: Request, res: Response) => {
           name: 'Masa 3',
           number: '3',
           capacity: 6,
-          status: 'AVAILABLE'
+          status: 'AVAILABLE',
+          areaId: area.id
         }
       }),
       prisma.table.create({
@@ -223,7 +216,8 @@ export const loadSampleData = async (req: Request, res: Response) => {
           name: 'Masa 4',
           number: '4',
           capacity: 4,
-          status: 'AVAILABLE'
+          status: 'AVAILABLE',
+          areaId: area.id
         }
       }),
       prisma.table.create({
@@ -231,7 +225,8 @@ export const loadSampleData = async (req: Request, res: Response) => {
           name: 'Masa 5',
           number: '5',
           capacity: 8,
-          status: 'AVAILABLE'
+          status: 'AVAILABLE',
+          areaId: area.id
         }
       })
     ]);
@@ -255,7 +250,7 @@ export const loadSampleData = async (req: Request, res: Response) => {
     console.log('✅ Demo verileri başarıyla yüklendi');
     console.log(`📊 Yüklenen veriler:
     - ${categories.length} kategori
-    - ${menuItems.length} menü öğesi  
+    - ${products.length} ürün
     - ${tables.length} masa
     - 1 yazıcı ayarı`);
     
@@ -264,7 +259,7 @@ export const loadSampleData = async (req: Request, res: Response) => {
       message: 'Demo verileri başarıyla yüklendi',
       data: {
         categories: categories.length,
-        menuItems: menuItems.length,
+        products: products.length,
         tables: tables.length,
         printers: 1
       }
@@ -288,7 +283,7 @@ export const createBackup = async (req: Request, res: Response) => {
     // Tüm verileri al
     const [
       categories,
-      menuItems,
+      products,
       tables,
       orders,
       orderItems,
@@ -296,10 +291,10 @@ export const createBackup = async (req: Request, res: Response) => {
       printers
     ] = await Promise.all([
       prisma.category.findMany(),
-      prisma.menuItem.findMany({ include: { category: true } }),
+      prisma.product.findMany({ include: { category: true } }),
       prisma.table.findMany(),
       prisma.order.findMany({ include: { table: true } }),
-      prisma.orderItem.findMany({ include: { menuItem: true, order: true } }),
+      prisma.orderItem.findMany({ include: { product: true, order: true } }),
       prisma.user.findMany({ select: { id: true, username: true, role: true, createdAt: true } }), // Şifreleri dahil etme
       prisma.printer.findMany()
     ]);
@@ -311,7 +306,7 @@ export const createBackup = async (req: Request, res: Response) => {
         system: 'RestoCafe',
         recordCounts: {
           categories: categories.length,
-          menuItems: menuItems.length,
+          products: products.length,
           tables: tables.length,
           orders: orders.length,
           orderItems: orderItems.length,
@@ -321,7 +316,7 @@ export const createBackup = async (req: Request, res: Response) => {
       },
       data: {
         categories,
-        menuItems,
+        products,
         tables,
         orders,
         orderItems,
@@ -333,7 +328,7 @@ export const createBackup = async (req: Request, res: Response) => {
     console.log('✅ Sistem yedeği oluşturuldu');
     console.log(`📊 Yedeklenen veriler:
     - ${categories.length} kategori
-    - ${menuItems.length} menü öğesi
+    - ${products.length} ürün
     - ${tables.length} masa
     - ${orders.length} sipariş
     - ${orderItems.length} sipariş kalemi
@@ -363,7 +358,7 @@ export const getSystemStats = async (req: Request, res: Response) => {
     
     const [
       categoryCount,
-      menuItemCount,
+      productCount,
       tableCount,
       orderCount,
       userCount,
@@ -372,7 +367,7 @@ export const getSystemStats = async (req: Request, res: Response) => {
       todayRevenue
     ] = await Promise.all([
       prisma.category.count(),
-      prisma.menuItem.count(),
+      prisma.product.count(),
       prisma.table.count(),
       prisma.order.count(),
       prisma.user.count(),
@@ -400,7 +395,7 @@ export const getSystemStats = async (req: Request, res: Response) => {
     const stats = {
       totalRecords: {
         categories: categoryCount,
-        menuItems: menuItemCount,
+        products: productCount,
         tables: tableCount,
         orders: orderCount,
         users: userCount,
@@ -428,6 +423,58 @@ export const getSystemStats = async (req: Request, res: Response) => {
     return res.status(500).json({
       success: false,
       message: 'Sistem istatistikleri alınırken hata oluştu',
+      error: error instanceof Error ? error.message : 'Bilinmeyen hata'
+    });
+  }
+};
+
+// Public seed endpoint - İlk kurulum için
+export const seedDatabase = async (req: Request, res: Response) => {
+  try {
+    console.log('🌱 Veritabanı seed işlemi başlatılıyor...');
+    
+    // Admin kullanıcısı var mı kontrol et
+    const existingAdmin = await prisma.user.findFirst({
+      where: { role: 'ADMIN' }
+    });
+    
+    if (existingAdmin) {
+      return res.json({
+        success: true,
+        message: 'Veritabanı zaten seed edilmiş',
+        data: { adminExists: true }
+      });
+    }
+    
+    // Admin kullanıcısı oluştur
+    const adminPassword = await bcrypt.hash('admin123', 10);
+    const admin = await prisma.user.create({
+      data: {
+        username: 'admin',
+        password: adminPassword,
+        name: 'Admin User',
+        email: 'admin@restocafe.com',
+        role: 'ADMIN'
+      }
+    });
+    
+    console.log('✅ Admin kullanıcısı oluşturuldu');
+    
+    return res.json({
+      success: true,
+      message: 'Veritabanı başarıyla seed edildi',
+      data: { 
+        adminCreated: true,
+        adminUsername: 'admin',
+        adminPassword: 'admin123'
+      }
+    });
+    
+  } catch (error) {
+    console.error('❌ Seed hatası:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Seed işlemi başarısız',
       error: error instanceof Error ? error.message : 'Bilinmeyen hata'
     });
   }

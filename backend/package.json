@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only ./src/index.ts",
     "build": "tsc",
+    "vercel-build": "npx prisma generate && npm run build",
     "start": "ts-node src/index.ts",
     "start:prod": "node dist/index.js",
     "postinstall": "npx prisma generate",

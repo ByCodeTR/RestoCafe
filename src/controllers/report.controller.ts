@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { PrismaClient } from '../../src/generated/prisma';
+import { PrismaClient } from '@prisma/client';
 import { startOfDay, endOfDay, startOfWeek, endOfWeek, startOfMonth, endOfMonth, parseISO } from 'date-fns';
 
 const prisma = new PrismaClient();

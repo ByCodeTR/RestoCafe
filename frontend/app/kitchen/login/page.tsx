@@ -7,13 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import api from '@/lib/api';
-import { Metadata } from "next"
-import Footer from '../../components/Footer';
-
-export const metadata: Metadata = {
-  title: "Mutfak Girişi | RestoCafe",
-  description: "RestoCafe mutfak giriş paneli",
-}
+import Footer from '@/components/Footer';
 
 export default function KitchenLoginPage() {
   const router = useRouter();

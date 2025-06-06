@@ -34,7 +34,7 @@ interface CategoryFormModalProps {
   isOpen: boolean
   onClose: () => void
   onSubmit: (data: any) => void
-  editingCategory?: Category
+  editingCategory?: Category | null
 }
 
 export function CategoryFormModal({

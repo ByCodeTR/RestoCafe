@@ -625,9 +625,9 @@ export default function OrdersPage() {
       case 'OCCUPIED':
         return 'destructive'
       case 'RESERVED':
-        return 'warning'
+        return 'secondary'
       default:
-        return 'success'
+        return 'outline'
     }
   }
 

@@ -45,7 +45,7 @@ export function useSocket() {
       console.log('Socket bağlantısı kesildi:', reason);
       
       // Eğer client tarafından kapatılmadıysa yeniden bağlanmayı dene
-      if (reason !== 'io client disconnect') {
+      if (reason !== 'io client disconnect' && currentSocket) {
         currentSocket.connect();
       }
     }

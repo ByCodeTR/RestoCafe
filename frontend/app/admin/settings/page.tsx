@@ -243,7 +243,7 @@ export default function SettingsPage() {
       
       // Kasa yazıcısı
       if (settings.cashPrinter.enabled) {
-        const cashPrinterData = {
+        const cashPrinterData: any = {
           name: settings.cashPrinter.name,
           type: 'CASH',
           isActive: settings.cashPrinter.enabled
@@ -270,7 +270,7 @@ export default function SettingsPage() {
 
       // Mutfak yazıcısı
       if (settings.kitchenPrinter.enabled) {
-        const kitchenPrinterData = {
+        const kitchenPrinterData: any = {
           name: settings.kitchenPrinter.name,
           type: 'KITCHEN',
           isActive: settings.kitchenPrinter.enabled

@@ -158,7 +158,7 @@ export const deleteTable = async (req: Request, res: Response) => {
       where: {
         tableId: id,
         status: {
-          in: ['ACTIVE', 'PENDING'],
+          in: ['NEW', 'PREPARING', 'READY'],
         },
       },
     });

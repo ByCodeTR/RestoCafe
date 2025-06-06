@@ -3,11 +3,16 @@ import {
   resetSystem,
   loadSampleData,
   createBackup,
-  getSystemStats
+  getSystemStats,
+  seedDatabase
 } from '../controllers/system.controller';
 import { authMiddleware as authenticate, authorize } from '../middlewares/auth.middleware';
 
 const router = Router();
+
+// POST /api/system/seed - Veritabanını seed et (PUBLIC - İlk kurulum için)
+router.route('/seed')
+  .post(seedDatabase);
 
 // POST /api/system/reset - Sistemi sıfırla (ADMIN)
 router.route('/reset')
