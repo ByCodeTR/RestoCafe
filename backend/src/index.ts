@@ -48,6 +48,7 @@ export const io = new Server(server, {
         'http://localhost:5000',
         'http://127.0.0.1:3000',
         'https://frontend-theta-liard-54.vercel.app',
+        'https://frontend-8sn6pc3pc-bycodetrs-projects.vercel.app',
         'https://restocafe-frontend.vercel.app',
         'https://restocafe.vercel.app'
       ];
@@ -119,6 +120,7 @@ app.use(cors({
       'http://localhost:5000',
       'http://127.0.0.1:3000',
       'https://frontend-theta-liard-54.vercel.app',
+      'https://frontend-8sn6pc3pc-bycodetrs-projects.vercel.app',
       'https://restocafe-frontend.vercel.app',
       'https://restocafe.vercel.app'
     ];
@@ -165,6 +167,7 @@ app.use((req, res, next) => {
     'http://localhost:5000',
     'http://127.0.0.1:3000',
     'https://frontend-theta-liard-54.vercel.app',
+    'https://frontend-8sn6pc3pc-bycodetrs-projects.vercel.app',
     'https://restocafe-frontend.vercel.app',
     'https://restocafe.vercel.app'
   ];
