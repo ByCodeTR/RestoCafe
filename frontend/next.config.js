@@ -5,7 +5,7 @@ const nextConfig = {
   // Environment variables
   env: {
     NEXT_PUBLIC_API_URL: process.env.NODE_ENV === 'production' 
-      ? 'https://backend-qv9kcw7bf-bycodetrs-projects.vercel.app/api'
+      ? 'https://backend-dtzx6fr9a-bycodetrs-projects.vercel.app/api'
       : 'http://localhost:5000/api'
   },
   // Only use rewrites in development
